@@ -7,12 +7,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v2.4.0  # 使用具体版本以提高稳定性
+      - uses: actions/checkout@v2.4.0
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v2.4.0  # 使用具体版本以提高稳定性
+      - name: Set up JDK
+        uses: actions/setup-java@v2.4.0
         with:
-          java-version: '21'
+          java-version: '17'  # 更改为 Java 17
           distribution: 'adopt'
           cache: gradle
 
@@ -21,10 +21,10 @@ jobs:
 
       - name: Check if JAR exists
         run: |
-          if not exist "./jar/custom_spider.jar" (
-            echo "JAR file not found!"
-            exit 1
-          )
+          if (-Not (Test-Path "./jar/custom_spider.jar")) {
+              Write-Host "JAR file not found!"
+              exit 1
+          }
 
       - name: Update spider jar
         uses: EndBug/add-and-commit@v7
