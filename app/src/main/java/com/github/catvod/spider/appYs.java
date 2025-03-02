@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class AppYS extends Spider {
+public class appYs extends Spider {
 
     private String siteUrl;
 
