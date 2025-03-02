@@ -9,10 +9,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2.4.0  # 使用具体版本以提高稳定性
 
-      - name: Set up JDK 21
+      - name: Set up JDK 17
         uses: actions/setup-java@v2.4.0  # 使用具体版本以提高稳定性
         with:
-          java-version: '21'
+          java-version: '17'
           distribution: 'adopt'
           cache: gradle
 
