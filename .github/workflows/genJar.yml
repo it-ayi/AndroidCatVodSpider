@@ -20,11 +20,14 @@ jobs:
         run: ./build.bat ec
 
       - name: Check if JAR exists
+        shell: pwsh  # 指定使用 PowerShell 作为 shell
         run: |
-          if not exist "./jar/custom_spider.jar" (
+          if (-Not (Test-Path "./jar/custom_spider.jar")) {
             echo "JAR file not found!"
             exit 1
-          )
+          } else {
+            echo "JAR file exists."
+          }
 
       - name: Update spider jar
         uses: EndBug/add-and-commit@v7
