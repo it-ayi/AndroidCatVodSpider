@@ -70,7 +70,7 @@ public class appYs extends Spider {
                 JsonArray categories = data.getAsJsonArray("categories");
                 for (int i = 0; i < categories.size(); i++) {
                     JsonObject category = categories.get(i).getAsJsonObject();
-                    categoryFilters.add(new Filter(category.get("id").getAsString(), category.get("name").getAsString()));
+                    categoryFilters.add(new Filter(category.get("id").getAsString(), category.get("name").getAsString(), new ArrayList<>()));
                 }
                 filters.put("分类", categoryFilters);
             }
@@ -81,7 +81,7 @@ public class appYs extends Spider {
                 JsonArray years = data.getAsJsonArray("years");
                 for (int i = 0; i < years.size(); i++) {
                     JsonObject year = years.get(i).getAsJsonObject();
-                    yearFilters.add(new Filter(year.get("year").getAsString(), year.get("year").getAsString()));
+                    yearFilters.add(new Filter(year.get("year").getAsString(), year.get("year").getAsString(), new ArrayList<>()));
                 }
                 filters.put("年份", yearFilters);
             }
