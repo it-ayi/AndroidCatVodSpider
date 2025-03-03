@@ -68,7 +68,8 @@ dependencies {
     testImplementation "io.github.dokar3:quickjs-kt-jvm:1.0.0-alpha13"
     testImplementation 'org.nanohttpd:nanohttpd:2.3.1'
     implementation 'commons-codec:commons-codec:1.17.1'
-
+    // JSON 解析库
+    implementation 'org.json:json:20210307' // 添加 JSON 依赖
     // Required -- JUnit 4 framework
     testImplementation 'junit:junit:4.12'
     // Optional -- Mockito framework（可选，用于模拟一些依赖对象，以达到隔离依赖的效果）
