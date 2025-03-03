@@ -1,7 +1,6 @@
 package com.github.catvod.spider;
 
 import android.content.Context;
-import android.net.Uri;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
@@ -10,8 +9,7 @@ import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Util;
+import com.github.catvod.net.OkHttp; // 使用 OkHttp 处理请求
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,14 +23,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- * CeChi 类实现了 Spider 接口，通过 API 获取视频数据并返回相应格式的数据。
+ * AppYsV2 类实现了 Spider 接口，通过 API 获取视频数据并返回相应格式的数据。
  */
 public class AppYsV2 extends Spider {
     private static String apiUrl = "http://yun.itayi.xyz"; // 替换为您的 API 基础 URL
 
     private HashMap<String, String> getHeader() {
         HashMap<String, String> header = new HashMap<>();
-        header.put("User-Agent", Util.CHROME);
+        header.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
         return header;
     }
 
@@ -44,9 +42,13 @@ public class AppYsV2 extends Spider {
         }
     }
 
+    private String sendRequest(String endpoint) throws IOException {
+        return OkHttp.string(endpoint, getHeader());
+    }
+
     @Override
     public String homeContent(boolean filter) throws Exception {
-        String jsonResponse = OkHttp.string(apiUrl + "/homeContent?filter=" + filter, getHeader());
+        String jsonResponse = sendRequest(apiUrl + "/homeContent?filter=" + filter);
         JSONObject jsonObject = new JSONObject(jsonResponse);
 
         // 解析分类信息
@@ -73,7 +75,6 @@ public class AppYsV2 extends Spider {
         // 解析过滤器信息
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         JSONObject filtersObject = jsonObject.getJSONObject("filters");
-        // 使用 Iterator 迭代 keys
         Iterator<String> keys = filtersObject.keys();
         while (keys.hasNext()) {
             String key = keys.next();
@@ -99,7 +100,7 @@ public class AppYsV2 extends Spider {
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
-        String jsonResponse = OkHttp.string(apiUrl + "/categoryContent?tid=" + tid + "&pg=" + pg, getHeader());
+        String jsonResponse = sendRequest(apiUrl + "/categoryContent?tid=" + tid + "&pg=" + pg);
         JSONObject jsonObject = new JSONObject(jsonResponse);
 
         List<Vod> list = new ArrayList<>();
@@ -119,10 +120,9 @@ public class AppYsV2 extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        String jsonResponse = OkHttp.string(apiUrl + "/detailContent?ids=" + JSON.toJSONString(ids), getHeader());
+        String jsonResponse = sendRequest(apiUrl + "/detailContent?ids=" + URLEncoder.encode(JSON.toJSONString(ids), "UTF-8"));
         JSONObject jsonObject = new JSONObject(jsonResponse);
 
-        // 解析视频详细信息
         List<Vod> vodList = new ArrayList<>();
         JSONArray listArray = jsonObject.getJSONArray("list");
         for (int i = 0; i < listArray.length(); i++) {
@@ -146,7 +146,7 @@ public class AppYsV2 extends Spider {
 
     @Override
     public String searchContent(String key, boolean quick) throws Exception {
-        String jsonResponse = OkHttp.string(apiUrl + "/searchContent?key=" + URLEncoder.encode(key, "UTF-8") + "&quick=" + quick, getHeader());
+        String jsonResponse = sendRequest(apiUrl + "/searchContent?key=" + URLEncoder.encode(key, "UTF-8") + "&quick=" + quick);
         JSONObject jsonObject = new JSONObject(jsonResponse);
 
         List<Vod> list = new ArrayList<>();
@@ -166,10 +166,10 @@ public class AppYsV2 extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        String jsonResponse = OkHttp.string(apiUrl + "/playerContent?id=" + id + "&flag=" + flag + (vipFlags.isEmpty() ? "" : "&vipFlags=" + JSON.toJSONString(vipFlags)), getHeader());
+        String jsonResponse = sendRequest(apiUrl + "/playerContent?id=" + id + "&flag=" + flag + (vipFlags.isEmpty() ? "" : "&vipFlags=" + JSON.toJSONString(vipFlags)));
         JSONObject jsonObject = new JSONObject(jsonResponse);
         String realUrl = jsonObject.getString("url");
 
         return Result.get().url(realUrl).header(getHeader()).string();
     }
-               }
+                 }
