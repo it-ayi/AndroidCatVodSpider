@@ -53,23 +53,24 @@ public class AppYs extends Spider {
             classes.add(new Class(classObj.getString("type_id"), classObj.getString("type_name")));
         }
 
-        // 处理过滤器
-        JSONObject filtersObj = jsonResponse.getJSONObject("filters");
-        for (String key : filtersObj.keySet()) {
-            JSONArray filterArray = filtersObj.getJSONArray(key);
-            List<Filter> filterList = new ArrayList<>();
-            for (int j = 0; j < filterArray.length(); j++) {
-                JSONObject filterObj = filterArray.getJSONObject(j);
-                List<Filter.Value> values = new ArrayList<>();
-                JSONArray valueArray = filterObj.getJSONArray("value");
-                for (int k = 0; k < valueArray.length(); k++) {
-                    JSONObject valueObj = valueArray.getJSONObject(k);
-                    values.add(new Filter.Value(valueObj.getString("n"), valueObj.getString("v")));
-                }
-                filterList.add(new Filter(filterObj.getString("key"), filterObj.getString("name"), values));
-            }
-            filters.put(key, filterList);
+// 处理过滤器
+JSONObject filtersObj = jsonResponse.getJSONObject("filters");
+for (Iterator<String> it = filtersObj.keys(); it.hasNext();) {
+    String key = it.next();
+    JSONArray filterArray = filtersObj.getJSONArray(key);
+    List<Filter> filterList = new ArrayList<>();
+    for (int j = 0; j < filterArray.length(); j++) {
+        JSONObject filterObj = filterArray.getJSONObject(j);
+        List<Filter.Value> values = new ArrayList<>();
+        JSONArray valueArray = filterObj.getJSONArray("value");
+        for (int k = 0; k < valueArray.length(); k++) {
+            JSONObject valueObj = valueArray.getJSONObject(k);
+            values.add(new Filter.Value(valueObj.getString("n"), valueObj.getString("v")));
         }
+        filterList.add(new Filter(filterObj.getString("key"), filterObj.getString("name"), values));
+    }
+    filters.put(key, filterList);
+}
 
         // 处理视频列表
         JSONArray vodArray = jsonResponse.getJSONArray("list");
@@ -161,4 +162,4 @@ public class AppYs extends Spider {
         String videoUrl = jsonResponse.getString("url");
         return Result.get().url(videoUrl).header(getHeader()).string(); // 返回播放地址
     }
-    }
+            }
