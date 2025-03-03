@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -72,7 +73,10 @@ public class AppYsV2 extends Spider {
         // 解析过滤器信息
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         JSONObject filtersObject = jsonObject.getJSONObject("filters");
-        for (String key : filtersObject.keys()) {
+        // 使用 Iterator 迭代 keys
+        Iterator<String> keys = filtersObject.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
             JSONArray filterArray = filtersObject.getJSONArray(key);
             List<Filter> filterList = new ArrayList<>();
             for (int j = 0; j < filterArray.length(); j++) {
@@ -168,4 +172,4 @@ public class AppYsV2 extends Spider {
 
         return Result.get().url(realUrl).header(getHeader()).string();
     }
-}
+               }
