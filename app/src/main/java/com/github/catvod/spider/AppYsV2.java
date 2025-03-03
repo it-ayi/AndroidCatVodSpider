@@ -72,7 +72,7 @@ public class AppYsV2 extends Spider {
         // 解析过滤器信息
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         JSONObject filtersObject = jsonObject.getJSONObject("filters");
-        for (String key : filtersObject.keySet()) {
+        for (String key : filtersObject.keys()) {
             JSONArray filterArray = filtersObject.getJSONArray(key);
             List<Filter> filterList = new ArrayList<>();
             for (int j = 0; j < filterArray.length(); j++) {
