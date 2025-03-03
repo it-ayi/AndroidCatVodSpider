@@ -18,6 +18,10 @@
 -dontwarn okhttp3.**
 -keep class okio.** { *; }
 -keep class okhttp3.** { *; }
+-keep class java.awt.** { *; }
+-keep class javax.money.** { *; }
+-keep class org.javamoney.moneta.Money { *; }
+-keep class org.joda.** { *; }
 
 # Logger
 -keep class com.orhanobut.logger.** { *; }
