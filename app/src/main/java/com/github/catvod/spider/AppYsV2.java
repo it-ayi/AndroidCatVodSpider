@@ -64,20 +64,6 @@ public class AppYsV2 extends Spider {
     }
 
     /**
-     * 将 Headers 转换为 Map
-     *
-     * @param headers Headers 对象
-     * @return 转换后的 Map
-     */
-    private Map<String, String> headersToMap(Headers headers) {
-        Map<String, String> map = new HashMap<>();
-        for (int i = 0; i < headers.size(); i++) {
-            map.put(headers.name(i), headers.value(i));
-        }
-        return map;
-    }
-
-    /**
      * 获取首页内容，包括视频列表和分类信息
      *
      * @param filter 是否进行过滤
@@ -125,7 +111,7 @@ public class AppYsV2 extends Spider {
                 JSONArray valueArray = filterObj.getJSONArray("value"); // 获取过滤器值数组
                 for (int k = 0; k < valueArray.length(); k++) {
                     JSONObject valueObj = valueArray.getJSONObject(k); // 获取每个过滤器值对象
-                    filterValues.add(new Filter.Value(valueObj.getString("name"), valueObj.getString("value"))); // 添加到过滤器值列表
+                    filterValues.add(new Filter.Value(valueObj.getString("n"), valueObj.getString("v"))); // 添加到过滤器值列表
                 }
                 filterList.add(new Filter(filterId, filterName, filterValues)); // 将过滤器添加到过滤器列表
             }
@@ -181,18 +167,24 @@ public class AppYsV2 extends Spider {
         String jsonResponse = getApiResponse("/detailContent?ids=" + jsonArray.toString()); // 获取视频详情的 API 响应
         JSONObject jsonObject = new JSONObject(jsonResponse); // 解析响应为 JSON 对象
 
-        Vod vod = new Vod(); // 创建视频对象
-        vod.setVodId(jsonObject.getString("vod_id")); // 设置视频 ID
-        vod.setVodYear(jsonObject.getString("vod_year")); // 设置视频年份
-        vod.setVodName(jsonObject.getString("vod_name")); // 设置视频名称
-        vod.setVodActor(jsonObject.getString("vod_actor")); // 设置视频演员
-        vod.setVodRemarks(jsonObject.getString("vod_remarks")); // 设置视频备注
-        vod.setVodContent(jsonObject.getString("vod_content")); // 设置视频内容
-        vod.setVodDirector(jsonObject.getString("vod_director")); // 设置视频导演
-        vod.setVodPlayFrom(jsonObject.getString("vod_play_from")); // 设置播放来源
-        vod.setVodPlayUrl(jsonObject.getString("vod_play_url")); // 设置播放链接
+        List<Vod> vodList = new ArrayList<>(); // 创建视频对象列表
+        JSONArray listArray = jsonObject.getJSONArray("list");
+        for (int i = 0; i < listArray.length(); i++) {
+            JSONObject vodObj = listArray.getJSONObject(i);
+            Vod vod = new Vod(); // 创建视频对象
+            vod.setVodId(vodObj.getString("vod_id")); // 设置视频 ID
+            vod.setVodYear(vodObj.getString("vod_year")); // 设置视频年份
+            vod.setVodName(vodObj.getString("vod_name")); // 设置视频名称
+            vod.setVodActor(vodObj.getString("vod_actor")); // 设置视频演员
+            vod.setVodRemarks(vodObj.getString("vod_remarks")); // 设置视频备注
+            vod.setVodContent(vodObj.getString("vod_content")); // 设置视频内容
+            vod.setVodDirector(vodObj.getString("vod_director")); // 设置视频导演
+            vod.setVodPlayFrom(vodObj.getString("vod_play_from")); // 设置播放来源
+            vod.setVodPlayUrl(vodObj.getString("vod_play_url")); // 设置播放链接
+            vodList.add(vod); // 添加视频对象到列表
+        }
 
-        return Result.string(vod); // 返回视频详细信息
+        return Result.string(vodList); // 返回视频详细信息列表
     }
 
     /**
@@ -247,6 +239,6 @@ public class AppYsV2 extends Spider {
         JSONObject jsonObject = new JSONObject(jsonResponse); // 解析响应为 JSON 对象
         String realUrl = jsonObject.getString("url"); // 获取真实播放链接
 
-        return Result.get().url(realUrl).header(headersToMap(getHeader())).string(); // 返回播放链接及头信息
+        return Result.get().url(realUrl).header(getHeader()).string(); // 返回播放链接及头信息
     }
 }
