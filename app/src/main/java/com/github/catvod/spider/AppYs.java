@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AppYs extends Spider {
-    private static String siteUrl = "http://yun.itayi.xyz"; // 替换为实际的 API 地址
+    private static String siteUrl = "http://yun.itayi.xyz/videos.php"; // 替换为实际的 API 地址
 
     private Map<String, String> getHeader() {
         Map<String, String> header = new HashMap<>();
@@ -163,4 +163,4 @@ for (Iterator<String> it = filtersObj.keys(); it.hasNext();) {
         String videoUrl = jsonResponse.getString("url");
         return Result.get().url(videoUrl).header(getHeader()).string(); // 返回播放地址
     }
-    }
+                }
