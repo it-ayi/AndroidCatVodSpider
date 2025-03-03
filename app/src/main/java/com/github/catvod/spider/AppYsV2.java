@@ -16,8 +16,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * CeChi 类实现了 Spider 接口，通过 API 获取视频数据并返回相应格式的数据。
@@ -62,6 +64,20 @@ public class AppYsV2 extends Spider {
     }
 
     /**
+     * 将 Headers 转换为 Map
+     *
+     * @param headers Headers 对象
+     * @return 转换后的 Map
+     */
+    private Map<String, String> headersToMap(Headers headers) {
+        Map<String, String> map = new HashMap<>();
+        for (int i = 0; i < headers.size(); i++) {
+            map.put(headers.name(i), headers.value(i));
+        }
+        return map;
+    }
+
+    /**
      * 获取首页内容，包括视频列表和分类信息
      *
      * @param filter 是否进行过滤
@@ -97,7 +113,8 @@ public class AppYsV2 extends Spider {
         // 解析过滤器信息
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         JSONObject filtersObject = jsonObject.getJSONObject("filters"); // 获取过滤器对象
-        for (String key : filtersObject.names()) { // 使用 names() 获取所有的键
+        for (Iterator<String> it = filtersObject.keys(); it.hasNext(); ) { // 使用 Iterator 遍历
+            String key = it.next(); // 获取下一个键
             JSONArray filterArray = filtersObject.getJSONArray(key);
             List<Filter> filterList = new ArrayList<>();
             for (int j = 0; j < filterArray.length(); j++) {
@@ -230,6 +247,6 @@ public class AppYsV2 extends Spider {
         JSONObject jsonObject = new JSONObject(jsonResponse); // 解析响应为 JSON 对象
         String realUrl = jsonObject.getString("url"); // 获取真实播放链接
 
-        return Result.get().url(realUrl).header(getHeader()).string(); // 返回播放链接及头信息
+        return Result.get().url(realUrl).header(headersToMap(getHeader())).string(); // 返回播放链接及头信息
     }
 }
