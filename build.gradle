@@ -9,3 +9,7 @@ plugins {
 tasks.register('clean', Delete) {
     delete rootProject.layout.buildDirectory
 }
+
+dependencies {
+    implementation 'com.alibaba:fastjson:1.2.83' // 使用最新的版本
+}
