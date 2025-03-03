@@ -6,11 +6,11 @@ import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
+import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * CeChi 类实现了 Spider 接口，通过 API 获取视频数据并返回相应格式的数据。
@@ -48,6 +47,18 @@ public class AppYsV2 extends Spider {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response); // 检查响应是否成功
             return response.body().string(); // 返回响应体的内容
         }
+    }
+
+    /**
+     * 获取请求头信息
+     *
+     * @return 返回包含请求头的 Headers 对象
+     */
+    private Headers getHeader() {
+        return new Headers.Builder()
+                .add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
+                .add("Host", "yun.itayi.xyz")
+                .build();
     }
 
     /**
@@ -86,7 +97,7 @@ public class AppYsV2 extends Spider {
         // 解析过滤器信息
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         JSONObject filtersObject = jsonObject.getJSONObject("filters"); // 获取过滤器对象
-        for (String key : filtersObject.keySet()) {
+        for (String key : filtersObject.names()) { // 使用 names() 获取所有的键
             JSONArray filterArray = filtersObject.getJSONArray(key);
             List<Filter> filterList = new ArrayList<>();
             for (int j = 0; j < filterArray.length(); j++) {
@@ -146,7 +157,11 @@ public class AppYsV2 extends Spider {
      */
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        String jsonResponse = getApiResponse("/detailContent?ids=" + JSONArray.wrap(ids).toString()); // 获取视频详情的 API 响应
+        JSONArray jsonArray = new JSONArray();
+        for (String id : ids) {
+            jsonArray.put(id);
+        }
+        String jsonResponse = getApiResponse("/detailContent?ids=" + jsonArray.toString()); // 获取视频详情的 API 响应
         JSONObject jsonObject = new JSONObject(jsonResponse); // 解析响应为 JSON 对象
 
         Vod vod = new Vod(); // 创建视频对象
@@ -216,17 +231,5 @@ public class AppYsV2 extends Spider {
         String realUrl = jsonObject.getString("url"); // 获取真实播放链接
 
         return Result.get().url(realUrl).header(getHeader()).string(); // 返回播放链接及头信息
-    }
-
-    /**
-     * 获取请求头信息
-     *
-     * @return 返回包含请求头的 Map
-     */
-    private Map<String, String> getHeader() {
-        Map<String, String> header = new HashMap<>(); // 创建头信息映射
-        header.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"); // 设置用户代理
-        header.put("Host", "yun.itayi.xyz"); // 设置主机
-        return header; // 返回头信息
     }
 }
