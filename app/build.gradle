@@ -68,8 +68,7 @@ dependencies {
     testImplementation "io.github.dokar3:quickjs-kt-jvm:1.0.0-alpha13"
     testImplementation 'org.nanohttpd:nanohttpd:2.3.1'
     implementation 'commons-codec:commons-codec:1.17.1'
-    // JSON 解析库
-    implementation 'org.json:json:20210307' // 添加 JSON 依赖
+    
     // Required -- JUnit 4 framework
     testImplementation 'junit:junit:4.12'
     // Optional -- Mockito framework（可选，用于模拟一些依赖对象，以达到隔离依赖的效果）
@@ -79,11 +78,6 @@ dependencies {
     //implementation 'wang.harlon.quickjs:wrapper-java:1.0.0'
     // implementation(ext: 'aar', name: 'quickjs', group: 'fongmi', version: 'release')
     // api 'wang.harlon.quickjs:wrapper-android:2.0.0'
-    implementation 'com.alibaba:fastjson:1.2.83' // 使用最新的版本
-    implementation 'com.google.guava:guava:30.1-android' // 添加 Guava 依赖
-    implementation 'joda-time:joda-time:2.10.10' // 添加 Joda-Time 依赖
 
-    implementation 'org.glassfish.jersey.containers:jersey-container-servlet-core:<version>'
-    implementation 'org.glassfish.jersey.core:jersey-server:2.35' // 替换为您查到的版本
 
 }
