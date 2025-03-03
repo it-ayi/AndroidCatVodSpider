@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -162,4 +163,4 @@ for (Iterator<String> it = filtersObj.keys(); it.hasNext();) {
         String videoUrl = jsonResponse.getString("url");
         return Result.get().url(videoUrl).header(getHeader()).string(); // 返回播放地址
     }
-            }
+    }
