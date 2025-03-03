@@ -78,6 +78,6 @@ dependencies {
     //implementation 'wang.harlon.quickjs:wrapper-java:1.0.0'
     // implementation(ext: 'aar', name: 'quickjs', group: 'fongmi', version: 'release')
     // api 'wang.harlon.quickjs:wrapper-android:2.0.0'
-
+    implementation 'com.alibaba:fastjson:1.2.83' // 使用最新的版本
 
 }
