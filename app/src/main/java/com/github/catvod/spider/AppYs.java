@@ -36,15 +36,13 @@ public class AppYs extends Spider {
     @Override
     public void init(Context context, String extend) throws Exception {
         super.init(context, extend);
-        mContext = context;
-        JsonObject peizhi; // 假设 peizhi 是 JsonObject 类型
-        try {
-            peizhi = TextUtils.isEmpty(extend) ? new JsonObject() : JsonParser.parseString(extend).getAsJsonObject();
-        } catch (Exception e) {
-            SpiderDebug.log(e);
-            peizhi = new JsonObject();
-            // 假设我们需要从 JSON 中获取 "url"
-            siteUrl = peizhi.get("url").getAsString();
+        if (!extend.isEmpty()) {
+            // 解析 extend 字符串
+            if (extend != null && !extend.isEmpty()) {
+                JsonObject jsonObject = JsonParser.parseString(extend).getAsJsonObject();
+                // 假设我们需要从 JSON 中获取 "url"
+                siteUrl = jsonObject.get("url").getAsString();
+            }
         }
     }
 
