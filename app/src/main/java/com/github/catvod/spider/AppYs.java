@@ -21,6 +21,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 public class AppYs extends Spider {
     private static String siteUrl = "http://xxx.xxxx.xyz/videos.php"; // 替换为实际的 API 地址
 
@@ -34,7 +37,13 @@ public class AppYs extends Spider {
     public void init(Context context, String extend) throws Exception {
         super.init(context, extend);
         if (!extend.isEmpty()) {
-            siteUrl = extend.get("url").getAsString();
+            siteUrl = extend; // 允许传入新的 API 地址
+            // 解析 extend 字符串
+            if (extend != null && !extend.isEmpty()) {
+                JsonObject extend = JsonParser.parseString(extend).getAsJsonObject();
+                // 假设我们需要从 JSON 中获取 "url"
+                String siteUrl = jsonObject.get("url").getAsString();
+            }
         }
     }
 
