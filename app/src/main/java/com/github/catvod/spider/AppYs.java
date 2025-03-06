@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AppYs extends Spider {
-    private static String siteUrl = "http://yun.itayi.xyz/videos.php"; // 替换为实际的 API 地址
+    private static String siteUrl = "http://xxx.xxxx.xyz/videos.php"; // 替换为实际的 API 地址
 
     private Map<String, String> getHeader() {
         Map<String, String> header = new HashMap<>();
@@ -34,7 +34,7 @@ public class AppYs extends Spider {
     public void init(Context context, String extend) throws Exception {
         super.init(context, extend);
         if (!extend.isEmpty()) {
-            siteUrl = extend; // 允许传入新的 API 地址
+            siteUrl = extend.get("url").getAsString();
         }
     }
 
@@ -42,7 +42,7 @@ public class AppYs extends Spider {
     public String homeContent(boolean filter) throws Exception {
         String url = siteUrl + "/homeContent?filter=" + filter; // 构建请求 URL
         JSONObject jsonResponse = new JSONObject(OkHttp.string(url, getHeader()));
-        
+
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         List<Vod> list = new ArrayList<>();
@@ -55,23 +55,23 @@ public class AppYs extends Spider {
         }
 
 // 处理过滤器
-JSONObject filtersObj = jsonResponse.getJSONObject("filters");
-for (Iterator<String> it = filtersObj.keys(); it.hasNext();) {
-    String key = it.next();
-    JSONArray filterArray = filtersObj.getJSONArray(key);
-    List<Filter> filterList = new ArrayList<>();
-    for (int j = 0; j < filterArray.length(); j++) {
-        JSONObject filterObj = filterArray.getJSONObject(j);
-        List<Filter.Value> values = new ArrayList<>();
-        JSONArray valueArray = filterObj.getJSONArray("value");
-        for (int k = 0; k < valueArray.length(); k++) {
-            JSONObject valueObj = valueArray.getJSONObject(k);
-            values.add(new Filter.Value(valueObj.getString("n"), valueObj.getString("v")));
+        JSONObject filtersObj = jsonResponse.getJSONObject("filters");
+        for (Iterator<String> it = filtersObj.keys(); it.hasNext();) {
+            String key = it.next();
+            JSONArray filterArray = filtersObj.getJSONArray(key);
+            List<Filter> filterList = new ArrayList<>();
+            for (int j = 0; j < filterArray.length(); j++) {
+                JSONObject filterObj = filterArray.getJSONObject(j);
+                List<Filter.Value> values = new ArrayList<>();
+                JSONArray valueArray = filterObj.getJSONArray("value");
+                for (int k = 0; k < valueArray.length(); k++) {
+                    JSONObject valueObj = valueArray.getJSONObject(k);
+                    values.add(new Filter.Value(valueObj.getString("n"), valueObj.getString("v")));
+                }
+                filterList.add(new Filter(filterObj.getString("key"), filterObj.getString("name"), values));
+            }
+            filters.put(key, filterList);
         }
-        filterList.add(new Filter(filterObj.getString("key"), filterObj.getString("name"), values));
-    }
-    filters.put(key, filterList);
-}
 
         // 处理视频列表
         JSONArray vodArray = jsonResponse.getJSONArray("list");
@@ -112,7 +112,7 @@ for (Iterator<String> it = filtersObj.keys(); it.hasNext();) {
     public String detailContent(List<String> ids) throws Exception {
         String url = siteUrl + String.format("/detailContent?ids=%s", new JSONArray(ids).toString());
         JSONObject jsonResponse = new JSONObject(OkHttp.string(url, getHeader()));
-        
+
         JSONArray vodArray = jsonResponse.getJSONArray("list");
         if (vodArray.length() > 0) {
             JSONObject vodObj = vodArray.getJSONObject(0);
@@ -159,8 +159,8 @@ for (Iterator<String> it = filtersObj.keys(); it.hasNext();) {
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
         String url = siteUrl + String.format("/playerContent?id=%s&flag=%s&vipFlags=%s", id, flag, new JSONArray(vipFlags).toString());
         JSONObject jsonResponse = new JSONObject(OkHttp.string(url, getHeader()));
-        
+
         String videoUrl = jsonResponse.getString("url");
         return Result.get().url(videoUrl).header(getHeader()).string(); // 返回播放地址
     }
-                }
+}
