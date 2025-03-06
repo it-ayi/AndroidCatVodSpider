@@ -37,10 +37,9 @@ public class AppYs extends Spider {
     public void init(Context context, String extend) throws Exception {
         super.init(context, extend);
         if (!extend.isEmpty()) {
-            siteUrl = extend; // 允许传入新的 API 地址
             // 解析 extend 字符串
             if (extend != null && !extend.isEmpty()) {
-                JsonObject extend = JsonParser.parseString(extend).getAsJsonObject();
+                JsonObject jsonObject = JsonParser.parseString(extend).getAsJsonObject();
                 // 假设我们需要从 JSON 中获取 "url"
                 String siteUrl = jsonObject.get("url").getAsString();
             }
