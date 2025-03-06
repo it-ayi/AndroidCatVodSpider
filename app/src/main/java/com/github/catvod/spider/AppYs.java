@@ -36,14 +36,13 @@ public class AppYs extends Spider {
     @Override
     public void init(Context context, String extend) throws Exception {
         super.init(context, extend);
-        if (!extend.isEmpty()) {
+        if (extend != null && !extend.isEmpty()) {
             // 解析 extend 字符串
-            if (extend != null && !extend.isEmpty()) {
-                JsonObject jsonObject = JsonParser.parseString(extend).getAsJsonObject();
-                // 假设我们需要从 JSON 中获取 "url"
-                String siteUrl = jsonObject.get("url").getAsString();
-            }
+            JsonObject jsonObject = JsonParser.parseString(extend).getAsJsonObject();
+            // 假设我们需要从 JSON 中获取 "url"
+            String siteUrl = jsonObject.get("url").getAsString();
         }
+
     }
 
     @Override
